@@ -5,8 +5,8 @@ var Schema = mongoose.Schema;
 
 var locationsSchema = new mongoose.Schema({
   timestamp: String,
-  latitude: String,
-  longitude: String,
+  latitude: Number,
+  longitude: Number,
 });
 
 var Stocks = mongoose.model('Stocks', locationsSchema);

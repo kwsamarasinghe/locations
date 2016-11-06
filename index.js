@@ -2,7 +2,9 @@
 
 require('dotenv').config({ silent: true });
 var mongoose = require('mongoose');
-mongoose.Promise = require('bluebird');
+var promise = require('bluebird');
+var location = require('./locations.js');
+mongoose.Promise = promise;
 var Location = require('./models/Location.js');
 
 mongoose.connect(process.env.MONGODB_URI);
@@ -13,13 +15,15 @@ mongoose.connection.on('error', function () {
   process.exit(1);
 });
 
-var location = new Location({
-  timestamp: new Date().getTime(),
-  latitude: '12.12',
-  longitude: '5.14',
-});
-
-location.save(function (err, location) {
-  console.log(location);
-  process.exit(0);
-});
+location.delete({})
+  .then(function () {
+    return location.save(10);
+  })
+  .then(function () {
+    location.find({ latitude: { $gt: 50 } })
+      .sort({ latitude: 1 })
+      .then(function (results) {
+        console.log(results);
+        process.exit(0);
+      });
+  });
